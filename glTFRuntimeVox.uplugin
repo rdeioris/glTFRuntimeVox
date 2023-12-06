@@ -19,11 +19,6 @@
       "Name": "glTFRuntimeVox",
       "Type": "Runtime",
       "LoadingPhase": "Default"
-    },
-    {
-      "Name": "glTFRuntimeVoxUE4ColorSpace",
-      "Type": "Runtime",
-      "LoadingPhase": "None"
     }
   ],
   "Plugins": [
