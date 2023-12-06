@@ -5,7 +5,11 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "glTFRuntimeAsset.h"
+#if ENGINE_MAJOR_VERSION == 4
+#include "glTFRuntimeVoxUE4ColorSpaceLibrary.h"
+#else
 #include "Engine/TextureDefines.h"
+#endif
 #include "glTFRuntimeVoxFunctionLibrary.generated.h"
 
 USTRUCT(BlueprintType)
@@ -31,7 +35,9 @@ struct FglTFRuntimeVoxConfig
 	FglTFRuntimeVoxConfig()
 	{
 		VoxelSize = 100.0f;
+#if ENGINE_MAJOR_VERSION >= 5
 		ColorSpace = ETextureColorSpace::TCS_sRGB;
+#endif
 		GammaCorrection = 2.2f;
 		bRemoveHiddenVoxels = false;
 		Padding = 0;
@@ -53,6 +59,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, meta = (AutoCreateRefTerm = "VoxConfig"), Category = "glTFRuntime|Vox")
 	static bool LoadVoxModelAsInstances(UglTFRuntimeAsset* Asset, const int32 ModelIndex, TArray<FTransform>& Transforms, TArray<FLinearColor>& Colors, const FglTFRuntimeVoxConfig& VoxConfig);
+
+	UFUNCTION(BlueprintCallable, meta = (AutoCreateRefTerm = "VoxConfig"), Category = "glTFRuntime|Vox")
+	static UVolumeTexture* LoadVoxModelAsVolumeTexture(UglTFRuntimeAsset* Asset, const int32 ModelIndex, const FglTFRuntimeVoxConfig& VoxConfig, const FglTFRuntimeImagesConfig& ImagesConfig, const FglTFRuntimeTextureSampler& Sampler);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "glTFRuntime|Vox")
 	static FIntVector GetVoxModelSize(UglTFRuntimeAsset* Asset, const int32 ModelIndex);

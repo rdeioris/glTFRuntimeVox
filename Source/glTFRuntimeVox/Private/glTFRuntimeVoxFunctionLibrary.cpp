@@ -2,7 +2,11 @@
 
 
 #include "glTFRuntimeVoxFunctionLibrary.h"
+#if ENGINE_MAJOR_VERSION >= 5
 #include "ColorSpace.h"
+#else
+#define FUintVector FUintVector4
+#endif
 
 struct FglTFRuntimeVoxNode
 {
@@ -54,8 +58,6 @@ namespace glTFRuntimeVox
 		const uint8 B = (Color >> 16) & 0xFF;
 		const uint8 A = (Color >> 24) & 0xFF;
 
-		UE::Color::FColorSpace ColorSpace = UE::Color::FColorSpace(static_cast<UE::Color::EColorSpace>(ColorSpaceType));
-
 		FVector4 LinearColor;
 
 		LinearColor.X = static_cast<float>(R) / 255.0;
@@ -63,7 +65,10 @@ namespace glTFRuntimeVox
 		LinearColor.Z = static_cast<float>(B) / 255.0;
 		LinearColor.W = static_cast<float>(A) / 255.0;
 
+#if ENGINE_MAJOR_VERSION >= 5
+		UE::Color::FColorSpace ColorSpace = UE::Color::FColorSpace(static_cast<UE::Color::EColorSpace>(ColorSpaceType));
 		LinearColor *= ColorSpace.GetRgbToXYZ().TransformFVector4(LinearColor);
+#endif
 
 		LinearColor.X = FMath::Pow(LinearColor.X, GammaCorrection);
 		LinearColor.Y = FMath::Pow(LinearColor.Y, GammaCorrection);
@@ -756,6 +761,62 @@ bool UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsInstances(UglTFRuntimeAsset* 
 	}
 
 	return true;
+}
+
+UVolumeTexture* UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsVolumeTexture(UglTFRuntimeAsset* Asset, const int32 ModelIndex, const FglTFRuntimeVoxConfig& VoxConfig, const FglTFRuntimeImagesConfig& ImagesConfig, const FglTFRuntimeTextureSampler& Sampler)
+{
+	TSharedPtr<FglTFRuntimeVoxCacheData> RuntimeVoxCacheData = glTFRuntimeVox::GetCacheData(Asset);
+	if (!RuntimeVoxCacheData)
+	{
+		return nullptr;
+	}
+
+	if (!RuntimeVoxCacheData->Models.IsValidIndex(ModelIndex))
+	{
+		return nullptr;
+	}
+
+	if (!RuntimeVoxCacheData->Sizes.IsValidIndex(ModelIndex))
+	{
+		return nullptr;
+	}
+
+	TArray<FglTFRuntimeMipMap> Mips;
+
+	TArray64<uint8> Pixels;
+	Pixels.AddZeroed(RuntimeVoxCacheData->Sizes[ModelIndex].X * RuntimeVoxCacheData->Sizes[ModelIndex].Z * 4);
+
+	for (const uint32 Voxel : RuntimeVoxCacheData->Models[ModelIndex])
+	{
+		uint8 Color = Voxel >> 24;
+		uint8 Z = (Voxel >> 16) & 0xFF;
+		uint8 Y = (Voxel >> 8) & 0xFF;
+		uint8 X = Voxel & 0xFF;
+		if (VoxConfig.bRemoveHiddenVoxels)
+		{
+			if (glTFRuntimeVox::IsVoxelSurrounded(RuntimeVoxCacheData->Models[ModelIndex], X, Y, Z, RuntimeVoxCacheData->Sizes[ModelIndex]))
+			{
+				continue;
+			}
+		}
+
+		if (Y != 0)
+		{
+			continue;
+		}
+
+		const int64 Offset = (Z * RuntimeVoxCacheData->Sizes[ModelIndex].X * 4) + (X * 4);
+		Pixels[Offset] = 255;
+		Pixels[Offset + 1] = 0;
+		Pixels[Offset + 2] = 0;
+		Pixels[Offset + 3] = 255;
+	}
+
+	FglTFRuntimeMipMap Mip(-1, EPixelFormat::PF_B8G8R8A8, RuntimeVoxCacheData->Sizes[ModelIndex].X, RuntimeVoxCacheData->Sizes[ModelIndex].Z, Pixels);
+
+	Mips.Add(Mip);
+
+	return Asset->GetParser()->BuildVolumeTexture(GetTransientPackage(), Mips, RuntimeVoxCacheData->Sizes[ModelIndex].X, RuntimeVoxCacheData->Sizes[ModelIndex].Z, ImagesConfig, Sampler);
 }
 
 bool UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsRuntimeLOD(UglTFRuntimeAsset* Asset, const int32 ModelIndex, FglTFRuntimeMeshLOD& RuntimeLOD, const FglTFRuntimeVoxConfig& VoxConfig, const FglTFRuntimeMaterialsConfig& MaterialsConfig)

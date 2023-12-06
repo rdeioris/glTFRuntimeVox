@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class glTFRuntimeVox : ModuleRules
+public class glTFRuntimeVoxUE4ColorSpace : ModuleRules
 {
-    public glTFRuntimeVox(ReadOnlyTargetRules Target) : base(Target)
+    public glTFRuntimeVoxUE4ColorSpace(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -33,18 +33,8 @@ public class glTFRuntimeVox : ModuleRules
             {
                 "CoreUObject",
                 "Engine",
-                "glTFRuntime"
             }
             );
-
-        if (Target.Version.MajorVersion >= 5)
-        {
-            PrivateDependencyModuleNames.Add("ColorManagement");
-        }
-        else
-        {
-            PrivateDependencyModuleNames.Add("glTFRuntimeVoxUE4ColorSpace");
-        }
 
 
         DynamicallyLoadedModuleNames.AddRange(
