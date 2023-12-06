@@ -784,7 +784,7 @@ UVolumeTexture* UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsVolumeTexture(UglT
 	TArray<FglTFRuntimeMipMap> Mips;
 
 	TArray64<uint8> Pixels;
-	Pixels.AddZeroed(RuntimeVoxCacheData->Sizes[ModelIndex].X * RuntimeVoxCacheData->Sizes[ModelIndex].Z * 4);
+	Pixels.AddZeroed(RuntimeVoxCacheData->Sizes[ModelIndex].X * RuntimeVoxCacheData->Sizes[ModelIndex].Z * RuntimeVoxCacheData->Sizes[ModelIndex].Y * 4);
 
 	for (const uint32 Voxel : RuntimeVoxCacheData->Models[ModelIndex])
 	{
@@ -800,23 +800,19 @@ UVolumeTexture* UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsVolumeTexture(UglT
 			}
 		}
 
-		if (Y != 0)
-		{
-			continue;
-		}
-
-		const int64 Offset = (Z * RuntimeVoxCacheData->Sizes[ModelIndex].X * 4) + (X * 4);
-		Pixels[Offset] = 255;
-		Pixels[Offset + 1] = 0;
-		Pixels[Offset + 2] = 0;
-		Pixels[Offset + 3] = 255;
+		const int64 Offset = (Y * RuntimeVoxCacheData->Sizes[ModelIndex].X * RuntimeVoxCacheData->Sizes[ModelIndex].Z * 4) + (((RuntimeVoxCacheData->Sizes[ModelIndex].Z-1) - Z) * RuntimeVoxCacheData->Sizes[ModelIndex].X * 4) + (X * 4);
+		const FVector4 LinearColor = glTFRuntimeVox::GetColor(Color, RuntimeVoxCacheData->Palette.GetData(), VoxConfig.ColorSpace, VoxConfig.GammaCorrection);
+		Pixels[Offset] = LinearColor.Z * 255;
+		Pixels[Offset + 1] = LinearColor.Y * 255;
+		Pixels[Offset + 2] = LinearColor.X * 255;
+		Pixels[Offset + 3] = LinearColor.W * 255;
 	}
 
 	FglTFRuntimeMipMap Mip(-1, EPixelFormat::PF_B8G8R8A8, RuntimeVoxCacheData->Sizes[ModelIndex].X, RuntimeVoxCacheData->Sizes[ModelIndex].Z, Pixels);
 
 	Mips.Add(Mip);
 
-	return Asset->GetParser()->BuildVolumeTexture(GetTransientPackage(), Mips, RuntimeVoxCacheData->Sizes[ModelIndex].X, RuntimeVoxCacheData->Sizes[ModelIndex].Z, ImagesConfig, Sampler);
+	return Asset->GetParser()->BuildVolumeTexture(GetTransientPackage(), Mips, RuntimeVoxCacheData->Sizes[ModelIndex].Y, ImagesConfig, Sampler);
 }
 
 bool UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsRuntimeLOD(UglTFRuntimeAsset* Asset, const int32 ModelIndex, FglTFRuntimeMeshLOD& RuntimeLOD, const FglTFRuntimeVoxConfig& VoxConfig, const FglTFRuntimeMaterialsConfig& MaterialsConfig)
