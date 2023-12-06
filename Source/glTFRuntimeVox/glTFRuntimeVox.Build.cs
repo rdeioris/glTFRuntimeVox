@@ -41,16 +41,11 @@ public class glTFRuntimeVox : ModuleRules
         {
             PrivateDependencyModuleNames.Add("ColorManagement");
         }
-        else
-        {
-            PrivateDependencyModuleNames.Add("glTFRuntimeVoxUE4ColorSpace");
-        }
-
 
         DynamicallyLoadedModuleNames.AddRange(
             new string[]
             {
-			}
+            }
             );
     }
 }
