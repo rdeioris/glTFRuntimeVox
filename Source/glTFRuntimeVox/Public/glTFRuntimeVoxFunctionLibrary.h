@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "glTFRuntimeAsset.h"
-#if ENGINE_MAJOR_VERSION == 4
+//#if ENGINE_MAJOR_VERSION == 4
 #include "glTFRuntimeVoxUE4ColorSpace.h"
-#else
+//#else
 #include "Engine/TextureDefines.h"
-#endif
+//#endif
 #include "glTFRuntimeVoxFunctionLibrary.generated.h"
 
 USTRUCT(BlueprintType)
