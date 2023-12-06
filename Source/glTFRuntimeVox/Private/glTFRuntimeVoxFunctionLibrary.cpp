@@ -122,6 +122,18 @@ namespace glTFRuntimeVox
 		return false;
 	}
 
+	void AddVoxelInstance(const uint32 X, const uint32 Y, const uint32 Z, const uint32 Color, const TArray<uint32>& Palette, const FglTFRuntimeVoxConfig& VoxConfig, const FUintVector Size, FTransform& Transform, FLinearColor& LinearColor)
+	{
+		const float Scale = VoxConfig.VoxelSize;
+		float XScaled = Y * Scale - (Size.Y * 0.5 * Scale) + (Y * VoxConfig.Padding);
+		float YScaled = X * Scale - (Size.X * 0.5 * Scale) + (X * VoxConfig.Padding);
+		float ZScaled = Z * Scale - (Size.Z * 0.5 * Scale) + (Z * VoxConfig.Padding);
+
+		Transform.SetLocation(FVector(XScaled, YScaled, ZScaled));
+
+		LinearColor = FLinearColor(GetColor(Color, Palette.GetData(), VoxConfig.ColorSpace, VoxConfig.GammaCorrection));
+	}
+
 	void AddVoxel(FglTFRuntimePrimitive& Primitive, const uint32 X, const uint32 Y, const uint32 Z, const uint32 Color, const TArray<uint32>& Palette, const FglTFRuntimeVoxConfig& VoxConfig, const FUintVector Size)
 	{
 		const float Scale = VoxConfig.VoxelSize;
@@ -698,6 +710,52 @@ namespace glTFRuntimeVox
 
 		return RuntimeVoxCacheData;
 	}
+}
+
+bool UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsInstances(UglTFRuntimeAsset* Asset, const int32 ModelIndex, TArray<FTransform>& Transforms, TArray<FLinearColor>& Colors, const FglTFRuntimeVoxConfig& VoxConfig)
+{
+	TSharedPtr<FglTFRuntimeVoxCacheData> RuntimeVoxCacheData = glTFRuntimeVox::GetCacheData(Asset);
+	if (!RuntimeVoxCacheData)
+	{
+		return false;
+	}
+
+	if (!RuntimeVoxCacheData->Models.IsValidIndex(ModelIndex))
+	{
+		return false;
+	}
+
+	if (!RuntimeVoxCacheData->Sizes.IsValidIndex(ModelIndex))
+	{
+		return false;
+	}
+
+	Transforms.Empty(RuntimeVoxCacheData->Models[ModelIndex].Num());
+	Colors.Empty(RuntimeVoxCacheData->Models[ModelIndex].Num());
+
+	for (const uint32 Voxel : RuntimeVoxCacheData->Models[ModelIndex])
+	{
+		uint8 Color = Voxel >> 24;
+		uint8 Z = (Voxel >> 16) & 0xFF;
+		uint8 Y = (Voxel >> 8) & 0xFF;
+		uint8 X = Voxel & 0xFF;
+		if (VoxConfig.bRemoveHiddenVoxels)
+		{
+			if (glTFRuntimeVox::IsVoxelSurrounded(RuntimeVoxCacheData->Models[ModelIndex], X, Y, Z, RuntimeVoxCacheData->Sizes[ModelIndex]))
+			{
+				continue;
+			}
+		}
+		FTransform Transform = FTransform::Identity;
+		FLinearColor LinearColor = FLinearColor::White;
+
+		glTFRuntimeVox::AddVoxelInstance(X, Y, Z, Color, RuntimeVoxCacheData->Palette, VoxConfig, RuntimeVoxCacheData->Sizes[ModelIndex], Transform, LinearColor);
+
+		Transforms.Add(Transform);
+		Colors.Add(LinearColor);
+	}
+
+	return true;
 }
 
 bool UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsRuntimeLOD(UglTFRuntimeAsset* Asset, const int32 ModelIndex, FglTFRuntimeMeshLOD& RuntimeLOD, const FglTFRuntimeVoxConfig& VoxConfig, const FglTFRuntimeMaterialsConfig& MaterialsConfig)
