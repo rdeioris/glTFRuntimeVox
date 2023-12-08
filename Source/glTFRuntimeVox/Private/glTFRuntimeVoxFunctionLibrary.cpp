@@ -763,7 +763,7 @@ bool UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsInstances(UglTFRuntimeAsset* 
 	return true;
 }
 
-UVolumeTexture* UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsVolumeTexture(UglTFRuntimeAsset* Asset, const int32 ModelIndex, const FglTFRuntimeVoxConfig& VoxConfig, const FglTFRuntimeImagesConfig& ImagesConfig, const FglTFRuntimeTextureSampler& Sampler)
+UVolumeTexture* UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsVolumeTexture(UglTFRuntimeAsset* Asset, const int32 ModelIndex, const FglTFRuntimeVoxConfig& VoxConfig, const FglTFRuntimeImagesConfig& ImagesConfig)
 {
 	TSharedPtr<FglTFRuntimeVoxCacheData> RuntimeVoxCacheData = glTFRuntimeVox::GetCacheData(Asset);
 	if (!RuntimeVoxCacheData)
@@ -811,6 +811,13 @@ UVolumeTexture* UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsVolumeTexture(UglT
 	FglTFRuntimeMipMap Mip(-1, EPixelFormat::PF_B8G8R8A8, RuntimeVoxCacheData->Sizes[ModelIndex].X, RuntimeVoxCacheData->Sizes[ModelIndex].Z, Pixels);
 
 	Mips.Add(Mip);
+
+	FglTFRuntimeTextureSampler Sampler;
+	Sampler.TileX = TextureAddress::TA_Clamp;
+	Sampler.TileY = TextureAddress::TA_Clamp;
+	Sampler.TileZ = TextureAddress::TA_Clamp;
+	Sampler.MinFilter = TextureFilter::TF_Nearest;
+	Sampler.MagFilter = TextureFilter::TF_Nearest;
 
 	return Asset->GetParser()->BuildVolumeTexture(GetTransientPackage(), Mips, RuntimeVoxCacheData->Sizes[ModelIndex].Y, ImagesConfig, Sampler);
 }

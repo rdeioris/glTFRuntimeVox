@@ -58,7 +58,7 @@ public:
 	static bool LoadVoxModelAsInstances(UglTFRuntimeAsset* Asset, const int32 ModelIndex, TArray<FTransform>& Transforms, TArray<FLinearColor>& Colors, const FglTFRuntimeVoxConfig& VoxConfig);
 
 	UFUNCTION(BlueprintCallable, meta = (AutoCreateRefTerm = "VoxConfig,ImagesConfig,Sampler"), Category = "glTFRuntime|Vox")
-	static UVolumeTexture* LoadVoxModelAsVolumeTexture(UglTFRuntimeAsset* Asset, const int32 ModelIndex, const FglTFRuntimeVoxConfig& VoxConfig, const FglTFRuntimeImagesConfig& ImagesConfig, const FglTFRuntimeTextureSampler& Sampler);
+	static UVolumeTexture* LoadVoxModelAsVolumeTexture(UglTFRuntimeAsset* Asset, const int32 ModelIndex, const FglTFRuntimeVoxConfig& VoxConfig, const FglTFRuntimeImagesConfig& ImagesConfig);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "glTFRuntime|Vox")
 	static FIntVector GetVoxModelSize(UglTFRuntimeAsset* Asset, const int32 ModelIndex);
