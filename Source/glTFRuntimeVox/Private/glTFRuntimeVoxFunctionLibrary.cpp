@@ -25,6 +25,7 @@ struct FglTFRuntimeVoxCacheData : FglTFRuntimePluginCacheData
 	TArray<TArray<uint32>> Models;
 	TArray<uint32> Palette;
 	TMap<uint32, FglTFRuntimeVoxNode> Nodes;
+	TArray<int32> Frames;
 };
 
 namespace glTFRuntimeVox
@@ -467,6 +468,11 @@ namespace glTFRuntimeVox
 					FrameId = FCString::Atoi(*(FrameDict["_f"]));
 				}
 
+				if (!RuntimeVoxCacheData->Frames.Contains(FrameId))
+				{
+					RuntimeVoxCacheData->Frames.Add(FrameId);
+				}
+
 				Node.Transforms.Add(FrameId, Transform);
 			}
 
@@ -529,6 +535,11 @@ namespace glTFRuntimeVox
 				if (ModelDict.Contains("_f"))
 				{
 					FrameId = FCString::Atoi(*(ModelDict["_f"]));
+				}
+
+				if (!RuntimeVoxCacheData->Frames.Contains(FrameId))
+				{
+					RuntimeVoxCacheData->Frames.Add(FrameId);
 				}
 
 				Node.Models.Add(FrameId, ModelId);
@@ -715,6 +726,8 @@ namespace glTFRuntimeVox
 			return nullptr;
 		}
 
+		RuntimeVoxCacheData->Frames.Sort();
+		
 		RuntimeVoxCacheData->bValid = true;
 
 		return RuntimeVoxCacheData;
@@ -843,6 +856,8 @@ bool UglTFRuntimeVoxFunctionLibrary::LoadVoxModelAsRuntimeLOD(UglTFRuntimeAsset*
 	{
 		return false;
 	}
+
+	RuntimeLOD.Empty();
 
 	FglTFRuntimePrimitive Primitive;
 	FglTFRuntimeMaterial RuntimeMaterial;
@@ -1061,4 +1076,53 @@ TMap<FString, FString> UglTFRuntimeVoxFunctionLibrary::GetVoxNodeAttributes(UglT
 	}
 
 	return EmptyAttributes;
+}
+
+TArray<int32> UglTFRuntimeVoxFunctionLibrary::GetVoxNodeFrameIndices(UglTFRuntimeAsset* Asset, const int32 NodeId)
+{
+	TArray<int32> FrameIndices;
+
+	TSharedPtr<FglTFRuntimeVoxCacheData> RuntimeVoxCacheData = glTFRuntimeVox::GetCacheData(Asset);
+	if (!RuntimeVoxCacheData)
+	{
+		return FrameIndices;
+	}
+
+	if (RuntimeVoxCacheData->Nodes.Contains(NodeId))
+	{
+		TArray<uint32> TransformIndices;
+		RuntimeVoxCacheData->Nodes[NodeId].Transforms.GetKeys(TransformIndices);
+		for (const uint32 Index : TransformIndices)
+		{
+			if (!FrameIndices.Contains(Index))
+			{
+				FrameIndices.Add(Index);
+			}
+		}
+		TArray<uint32> ModelIndices;
+		RuntimeVoxCacheData->Nodes[NodeId].Models.GetKeys(ModelIndices);
+		for (const uint32 Index : ModelIndices)
+		{
+			if (!FrameIndices.Contains(Index))
+			{
+				FrameIndices.Add(Index);
+			}
+		}
+		FrameIndices.Sort();
+	}
+
+	return FrameIndices;
+}
+
+TArray<int32> UglTFRuntimeVoxFunctionLibrary::GetVoxFrameIndices(UglTFRuntimeAsset* Asset)
+{
+	TArray<int32> FrameIndices;
+
+	TSharedPtr<FglTFRuntimeVoxCacheData> RuntimeVoxCacheData = glTFRuntimeVox::GetCacheData(Asset);
+	if (!RuntimeVoxCacheData)
+	{
+		return FrameIndices;
+	}
+
+	return RuntimeVoxCacheData->Frames;
 }

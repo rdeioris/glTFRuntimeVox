@@ -28,6 +28,9 @@ public:
 	UglTFRuntimeAsset* Asset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "glTFRuntime|Vox")
+	int32 FrameIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "glTFRuntime|Vox")
 	FglTFRuntimeVoxConfig VoxConfig;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "glTFRuntime|Vox")

@@ -10,6 +10,8 @@ AglTFRuntimeVoxAssetActor::AglTFRuntimeVoxAssetActor()
 
 	AssetRoot = CreateDefaultSubobject<USceneComponent>(TEXT("AssetRoot"));
 	RootComponent = AssetRoot;
+
+	FrameIndex = 0;
 }
 
 void AglTFRuntimeVoxAssetActor::ManageAttachments(USceneComponent* CurrentParentComponent, const TArray<int32>& CurrentChildren)
@@ -73,7 +75,7 @@ void AglTFRuntimeVoxAssetActor::BeginPlay()
 	{
 		const FString NodeName = UglTFRuntimeVoxFunctionLibrary::GetVoxNodeName(Asset, NodeId);
 
-		const int32 ModelIndex = UglTFRuntimeVoxFunctionLibrary::GetVoxNodeModelIndex(Asset, NodeId, 0);
+		const int32 ModelIndex = UglTFRuntimeVoxFunctionLibrary::GetVoxNodeModelIndex(Asset, NodeId, FrameIndex);
 		if (ModelIndex < 0)
 		{
 			USceneComponent* SceneComponent = NewObject<USceneComponent>(this, MakeUniqueObjectName(this, USceneComponent::StaticClass(), *NodeName));
@@ -82,7 +84,7 @@ void AglTFRuntimeVoxAssetActor::BeginPlay()
 				SceneComponent->SetupAttachment(GetRootComponent());
 				SceneComponent->RegisterComponent();
 				AddInstanceComponent(SceneComponent);
-				FTransform Transform = UglTFRuntimeVoxFunctionLibrary::GetVoxNodeTransform(Asset, NodeId);
+				FTransform Transform = UglTFRuntimeVoxFunctionLibrary::GetVoxNodeTransform(Asset, NodeId, FrameIndex);
 				Transform.ScaleTranslation(VoxConfig.VoxelSize);
 				SceneComponent->SetRelativeTransform(Transform);
 			}

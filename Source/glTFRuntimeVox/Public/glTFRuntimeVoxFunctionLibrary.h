@@ -92,4 +92,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "glTFRuntime|Vox")
 	static TMap<FString, FString> GetVoxNodeAttributes(UglTFRuntimeAsset* Asset, const int32 NodeId);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "glTFRuntime|Vox")
+	static TArray<int32> GetVoxNodeFrameIndices(UglTFRuntimeAsset* Asset, const int32 NodeId);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "glTFRuntime|Vox")
+	static TArray<int32> GetVoxFrameIndices(UglTFRuntimeAsset* Asset);
 };
