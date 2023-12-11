@@ -27,4 +27,7 @@ Or as a VolumeTexture (https://docs.unrealengine.com/4.26/en-US/RenderingAndGrap
 
 ![image](https://github.com/rdeioris/glTFRuntimeVox/assets/2234592/8d179e5f-0ae0-4366-9649-1c817351dbd3)
 
+Or as a series of instances in an InstancedStaticMeshComponent (the function will return an array of transforms and colors, you are free to use any shape for representing a single voxel):
+
+![image](https://github.com/rdeioris/glTFRuntimeVox/assets/2234592/08537c06-2994-48d6-9276-0707ad04d29e)
 
