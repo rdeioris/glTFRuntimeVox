@@ -644,6 +644,11 @@ namespace glTFRuntimeVox
 
 	TSharedPtr<FglTFRuntimeVoxCacheData> GetCacheData(UglTFRuntimeAsset* Asset)
 	{
+		if (!Asset)
+		{
+			return nullptr;
+		}
+
 		if (Asset->GetParser()->PluginsCacheData.Contains("Vox"))
 		{
 			if (Asset->GetParser()->PluginsCacheData["Vox"] && Asset->GetParser()->PluginsCacheData["Vox"]->bValid)
@@ -1039,4 +1044,21 @@ FTransform UglTFRuntimeVoxFunctionLibrary::GetVoxNodeTransform(UglTFRuntimeAsset
 	}
 
 	return FTransform::Identity;
+}
+
+TMap<FString, FString> UglTFRuntimeVoxFunctionLibrary::GetVoxNodeAttributes(UglTFRuntimeAsset* Asset, const int32 NodeId)
+{
+	TMap<FString, FString> EmptyAttributes;
+	TSharedPtr<FglTFRuntimeVoxCacheData> RuntimeVoxCacheData = glTFRuntimeVox::GetCacheData(Asset);
+	if (!RuntimeVoxCacheData)
+	{
+		return EmptyAttributes;
+	}
+
+	if (RuntimeVoxCacheData->Nodes.Contains(NodeId))
+	{
+		return RuntimeVoxCacheData->Nodes[NodeId].Attributes;
+	}
+
+	return EmptyAttributes;
 }

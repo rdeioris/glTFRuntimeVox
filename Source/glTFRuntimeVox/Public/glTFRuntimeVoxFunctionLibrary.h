@@ -89,4 +89,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "glTFRuntime|Vox")
 	static FTransform GetVoxNodeTransform(UglTFRuntimeAsset* Asset, const int32 NodeId, const int32 FrameIndex = 0);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "glTFRuntime|Vox")
+	static TMap<FString, FString> GetVoxNodeAttributes(UglTFRuntimeAsset* Asset, const int32 NodeId);
 };
