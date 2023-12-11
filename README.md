@@ -2,9 +2,13 @@
 MagicaVoxel loader for glTFRuntime
 ![image](https://github.com/rdeioris/glTFRuntimeVox/assets/2234592/94ac53f9-32c6-49e2-b9cd-2df35ea57592)
 
+Unreal 4.27, 5.0, 5.1, 5.2 and 5.3 are supported.
+
 ## Quickstart
 
-The ```AglTFRuntimeVoxAssetActor``` Class is available for quickly loading VOX scenes:
+Starting from a c++ project (with glTFRuntime enabled), clone the repository into the Plugins/ directory of your project (create the directory if it does not exist) and regenrate the solution.
+
+After compilation the ```AglTFRuntimeVoxAssetActor``` Class will be available for quickly loading Vox scenes:
 ![image](https://github.com/rdeioris/glTFRuntimeVox/assets/2234592/566de179-4b67-449f-b07c-7c257629a7ee)
 
 Ensure the set the 'as blob' flag in the loader config (even when loading from urls!)
@@ -31,3 +35,13 @@ Or as a series of instances in an InstancedStaticMeshComponent (the function wil
 
 ![image](https://github.com/rdeioris/glTFRuntimeVox/assets/2234592/08537c06-2994-48d6-9276-0707ad04d29e)
 
+## Animations
+
+## Saving as Unreal assets
+
+## TODO/WIP
+
+* Layers support
+* Multiple palettes support
+* Cameras support
+* Notes
