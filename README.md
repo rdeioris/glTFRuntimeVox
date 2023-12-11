@@ -50,6 +50,16 @@ TArray<int32> GetVoxNodeFrameIndices(UglTFRuntimeAsset* Asset, const int32 NodeI
 
 ## Animations
 
+A Vox scene can be composed of multple animation frames. Each frame represent the state (Transform and Model) of a Node in the timeline.
+
+The get the list of frame indices you can call ```TArray<int32> GetVoxFrameIndices(UglTFRuntimeAsset* Asset)```
+
+You can use those indices for loading a whole ```AglTFRuntimeVoxAssetActor``` for each Frame (just specify the FrameIndex property) or to manually select a Transform and a Model using ```int32 GetVoxNodeModelIndex(UglTFRuntimeAsset* Asset, const int32 NodeId, const int32 FrameIndex = 0)``` and ```FTransform GetVoxNodeTransform(UglTFRuntimeAsset* Asset, const int32 NodeId, const int32 FrameIndex = 0)```
+
+Given that the "animation" concept does not play well with static meshes, you generally want to have actors/components preloaded with frames and just switch them at specific framerate:
+
+![image](https://github.com/rdeioris/glTFRuntimeVox/assets/2234592/3a81cc63-425b-402b-b977-800c09ee2b9f)
+
 ## Saving as Unreal assets
 
 ## Usage in Unreal Engine 4
