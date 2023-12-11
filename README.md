@@ -6,9 +6,9 @@ Unreal 4.27, 5.0, 5.1, 5.2 and 5.3 are supported.
 
 ## Quickstart
 
-Starting from a c++ project (with glTFRuntime enabled), clone the repository into the Plugins/ directory of your project (create the directory if it does not exist) and regenrate the solution.
+Starting from a c++ project (with glTFRuntime enabled), clone the repository into the Plugins/ directory (create the directory if it does not exist) and regenerate the solution.
 
-After compilation the ```AglTFRuntimeVoxAssetActor``` Class will be available for quickly loading Vox scenes:
+After compilation, the ```AglTFRuntimeVoxAssetActor``` Class will be available for quickly loading Vox scenes:
 ![image](https://github.com/rdeioris/glTFRuntimeVox/assets/2234592/566de179-4b67-449f-b07c-7c257629a7ee)
 
 Ensure the set the 'as blob' flag in the loader config (even when loading from urls!)
