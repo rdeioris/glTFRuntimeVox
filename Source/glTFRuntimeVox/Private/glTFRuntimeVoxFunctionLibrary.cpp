@@ -1,6 +1,5 @@
 // Copyright 2023, Roberto De Ioris.
 
-
 #include "glTFRuntimeVoxFunctionLibrary.h"
 #if ENGINE_MAJOR_VERSION >= 5
 #include "ColorSpace.h"
