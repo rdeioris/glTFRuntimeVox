@@ -4,6 +4,8 @@ MagicaVoxel loader for glTFRuntime
 
 Unreal 4.27, 5.0, 5.1, 5.2 and 5.3 are supported.
 
+Join the Discord Server: https://discord.gg/DzS7MHy ('vox' channel)
+
 ## Quickstart
 
 Starting from a c++ project (with glTFRuntime enabled), clone the repository into the Plugins/ directory (create the directory if it does not exist) and regenerate the solution.
