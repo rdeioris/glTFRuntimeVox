@@ -62,11 +62,25 @@ Given that the "animation" concept does not play well with static meshes, you ge
 
 ## Saving as Unreal assets
 
+You can use the TransientObjectSaver plugin (https://github.com/rdeioris/TransientObjectSaver/) for saving Runtime loaded assets as Unreal assets (by using Blueprint Editor utilities or similar approacches, included obviously C++ tools):
+
+![image](https://github.com/rdeioris/glTFRuntimeVox/assets/2234592/b39bd24e-6bee-4951-a24a-771eee8c3076)
+
+Remember to enable the "Generate Static Mesh Description" flag in the StaticMeshConfig.
+
+If everything goes well you will end with a valid Unreal StaticMesh
+
+![image](https://github.com/rdeioris/glTFRuntimeVox/assets/2234592/259999b2-e7e7-4e21-b850-802461678d4d)
+
 ## Usage in Unreal Engine 4
+
+To use the plugin with Unreal 4 you need to copy Extras/glTFRuntimeVoxUE4ColorSpace.h to Source/glTFRuntimeVox/Public/glTFRuntimeVoxUE4ColorSpace.h )yes, you need to overwrite it) and regenrate the solution.
+
+This weird step is required given that Unreal 4 has no notion of custom ColorSpaces.
 
 ## TODO/WIP
 
-* Layers support
-* Multiple palettes support
-* Cameras support
+* Layers
+* Multiple palettes
+* Cameras
 * Palette Notes
