@@ -1,2 +1,2 @@
 # glTFRuntimeVox
-Magic Voxel loader for glTFRuntime
+MagicaVoxel loader for glTFRuntime
