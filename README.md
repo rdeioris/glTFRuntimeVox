@@ -21,7 +21,7 @@ The "Remove Hidden Voxels" option is an optimization avoiding "internal" voxel t
 
 ## Model and Nodes
 
-A Vox scene contains one or more models (collection of voxels). Those models are instantiated with nodes (a single model can instantiated multiple times in various positions and orientations).
+A Vox scene contains one or more models (collection of voxels). Those models are instantiated with nodes (a single model can be instantiated multiple times in various positions and orientations).
 
 You can load a Vox model as a RuntimeLOD (https://github.com/rdeioris/glTFRuntime-docs/blob/master/LOD.md) ready to become a StaticMesh:
 
@@ -35,13 +35,28 @@ Or as a series of instances in an InstancedStaticMeshComponent (the function wil
 
 ![image](https://github.com/rdeioris/glTFRuntimeVox/assets/2234592/08537c06-2994-48d6-9276-0707ad04d29e)
 
+You can get the size (number of voxels for each axis) of a model using the ```FIntVector GetVoxModelSize(UglTFRuntimeAsset* Asset, const int32 ModelIndex)``` method.
+
+Each node has a unique Id (an int32). Given the Id you can call the following methods:
+
+```
+TArray<int32> GetVoxNodeChildrenId(UglTFRuntimeAsset* Asset, const int32 NodeId)
+int32 GetVoxNodeModelIndex(UglTFRuntimeAsset* Asset, const int32 NodeId, const int32 FrameIndex = 0)
+FString GetVoxNodeName(UglTFRuntimeAsset* Asset, const int32 NodeId)
+FTransform GetVoxNodeTransform(UglTFRuntimeAsset* Asset, const int32 NodeId, const int32 FrameIndex = 0)
+TMap<FString, FString> GetVoxNodeAttributes(UglTFRuntimeAsset* Asset, const int32 NodeId)
+TArray<int32> GetVoxNodeFrameIndices(UglTFRuntimeAsset* Asset, const int32 NodeId)
+```
+
 ## Animations
 
 ## Saving as Unreal assets
+
+## Usage in Unreal Engine 4
 
 ## TODO/WIP
 
 * Layers support
 * Multiple palettes support
 * Cameras support
-* Notes
+* Palette Notes
