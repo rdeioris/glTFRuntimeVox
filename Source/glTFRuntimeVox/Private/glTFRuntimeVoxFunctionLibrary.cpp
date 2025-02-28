@@ -130,9 +130,9 @@ namespace glTFRuntimeVox
 	void AddVoxelInstance(const uint32 X, const uint32 Y, const uint32 Z, const uint32 Color, const TArray<uint32>& Palette, const FglTFRuntimeVoxConfig& VoxConfig, const FUintVector Size, FTransform& Transform, FLinearColor& LinearColor)
 	{
 		const float Scale = VoxConfig.VoxelSize;
-		float XScaled = Y * Scale - (Size.Y * 0.5 * Scale) + (Y * VoxConfig.Padding);
-		float YScaled = X * Scale - (Size.X * 0.5 * Scale) + (X * VoxConfig.Padding);
-		float ZScaled = Z * Scale - (Size.Z * 0.5 * Scale) + (Z * VoxConfig.Padding);
+		float XScaled = Y * Scale - (FMath::FloorToInt(Size.Y * 0.5) * Scale) + (Y * VoxConfig.Padding);
+		float YScaled = X * Scale - (FMath::FloorToInt(Size.X * 0.5) * Scale) + (X * VoxConfig.Padding);
+		float ZScaled = Z * Scale - (FMath::FloorToInt(Size.Z * 0.5) * Scale) + (Z * VoxConfig.Padding);
 
 		Transform.SetLocation(FVector(XScaled, YScaled, ZScaled));
 
@@ -142,9 +142,9 @@ namespace glTFRuntimeVox
 	void AddVoxel(FglTFRuntimePrimitive& Primitive, const uint32 X, const uint32 Y, const uint32 Z, const uint32 Color, const TArray<uint32>& Palette, const FglTFRuntimeVoxConfig& VoxConfig, const FUintVector Size)
 	{
 		const float Scale = VoxConfig.VoxelSize;
-		float XScaled = Y * Scale - (Size.Y * 0.5 * Scale) + (Y * VoxConfig.Padding);
-		float YScaled = X * Scale - (Size.X * 0.5 * Scale) + (X * VoxConfig.Padding);
-		float ZScaled = Z * Scale - (Size.Z * 0.5 * Scale) + (Z * VoxConfig.Padding);
+		float XScaled = Y * Scale - (FMath::FloorToInt(Size.Y * 0.5) * Scale) + (Y * VoxConfig.Padding);
+		float YScaled = X * Scale - (FMath::FloorToInt(Size.X * 0.5) * Scale) + (X * VoxConfig.Padding);
+		float ZScaled = Z * Scale - (FMath::FloorToInt(Size.Z * 0.5) * Scale) + (Z * VoxConfig.Padding);
 
 		const int32 Base = Primitive.Positions.Num();
 
